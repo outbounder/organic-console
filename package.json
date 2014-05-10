@@ -1,0 +1,24 @@
+{
+  "name": "organic-console",
+  "version": "0.0.1",
+  "description": "Organelle which overrides standard `console` object methods [\"log\", \"debug\", \"error\", \"warn\", \"info\", \"trace\"] and emits given arguments instead of writing to stdout/stderr",
+  "main": "index.js",
+  "dependencies": {
+    "organic": "~0.1.1",
+    "underscore": "~1.6.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/outbounder/organic-console.git"
+  },
+  "author": "Boris Filipov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/outbounder/organic-console/issues"
+  },
+  "homepage": "https://github.com/outbounder/organic-console"
+}
