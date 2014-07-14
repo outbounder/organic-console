@@ -1,26 +1,39 @@
-var Organel = require("organic").Organel
 var _ = require("underscore")
 
-module.exports = Organel.extend(function(plasma, dna){
-  Organel.call(this, plasma, dna)
-
+module.exports = function(plasma, dna){
+  this.dna = dna
+  this.dna.methods = dna.methods || ["log", "debug", "error", "warn", "info", "trace"]
+  this.methods = []
+  this.plasma = plasma
   if(dna.reactOn)
-    this.on(dna.reactOn, this.reaction)
+    plasma.on(dna.reactOn, this.reaction, this)
   else
     this.reaction(dna)
-}, {
-  reaction: function(options) {
-    var self = this;
-    ["log", "debug", "error", "warn", "info", "trace"].forEach(function(method){
-      console[method] = function(){ 
-        self.emitEvery({
-          method: method,
-          arguments: Array.prototype.slice.call(arguments, 0)
-        })
-      }
-    })
-  },
-  emitEvery: function(c) {
-    this.emit(_.extend({}, this.config.emitEvery, c))
-  }
-})
+  if(dna.disposeOn)
+    plasma.on(dna.disposeOn, this.dispose, this)
+}
+
+module.exports.prototype.reaction = function(options) {
+  var self = this
+  this.dna.methods.forEach(function(method){
+    self.methods[method] = console[method]
+    console[method] = function(){ 
+      self.emitEvery({
+        method: method,
+        arguments: Array.prototype.slice.call(arguments, 0)
+      })
+    }
+  })
+}
+
+module.exports.prototype.dispose = function(options) {
+  var self = this
+  this.dna.methods.forEach(function(method){
+    if(self.methods[method])
+      console[method] = self.methods[method]
+  })
+}
+
+module.exports.prototype.emitEvery = function(c) {
+  this.plasma.emit(_.extend({}, this.dna.emitEvery, c))
+}
